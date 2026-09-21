@@ -30,21 +30,28 @@ Android phone --SMS--> SmsReceiver --HTTP POST--> self-hosted ntfy server --push
 
 ### 1. Server
 
-Requires a host with a public IP/domain, a reverse proxy (nginx or similar)
-terminating TLS, and a package manager (or Docker, if you prefer — this repo
-assumes a native install via ntfy's `.deb`/`.rpm` releases).
+One-command install on any systemd-based Linux host (Debian/Ubuntu, RHEL/
+Fedora, or a generic fallback for anything else) — installs ntfy, configures
+nginx + certbot if present, and creates a scoped user/token:
 
-1. Install ntfy: https://ntfy.sh/docs/install/
-2. Copy `server/ntfy/server.yml` to `/etc/ntfy/server.yml`, replacing
-   `base-url` with your own domain, then `systemctl enable --now ntfy`.
-3. Point your reverse proxy at ntfy's `listen-http` address (e.g.
-   `127.0.0.1:2586`) for your domain, and get a TLS cert (e.g. via certbot).
-4. Create a scoped user and access token:
-   ```
-   sudo ntfy user add --role=user forwarder
-   sudo ntfy access forwarder sms-forward rw
-   sudo ntfy token add forwarder
-   ```
+```
+curl -sSL https://get.asdl.website | DOMAIN=ntfy.example.com bash
+```
+
+(or `bash -s -- ntfy.example.com` to pass the domain positionally; run
+`... | bash -s -- --version` to check the stamped installer version without
+doing anything). `server/install.sh` in this repo is the source — the
+release pipeline stamps a version into it (see [Releases](#releases)).
+
+Manual setup instead: install ntfy (https://ntfy.sh/docs/install/), copy
+`server/ntfy/server.yml` to `/etc/ntfy/server.yml` with your own `base-url`,
+`systemctl enable --now ntfy`, point a reverse proxy at its `listen-http`
+address (default `127.0.0.1:2586`), get a TLS cert, then:
+```
+sudo ntfy user add --role=user forwarder
+sudo ntfy access forwarder sms-forward rw
+sudo ntfy token add forwarder
+```
 
 ### 2. Android app
 
@@ -71,6 +78,17 @@ where supported).
   publishable without the scoped token/account.
 - Treat the access token and account password as secrets — don't commit
   them. `android/local.properties` and build outputs are gitignored.
+
+## Releases
+
+Tagging a version (`vX.Y.Z`) triggers `.github/workflows/release.yml`, which
+builds the APK and publishes a GitHub Release with two stamped assets:
+- `install.sh` — `server/install.sh` with `@@VERSION@@` replaced by the tag
+- `sms-forwarder-vX.Y.Z.apk`
+
+`https://get.asdl.website` serves the `install.sh` from the latest release,
+so the one-line install command always matches a tagged, reproducible
+version rather than whatever's on `master`.
 
 ## License
 
