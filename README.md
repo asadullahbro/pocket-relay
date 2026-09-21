@@ -42,6 +42,10 @@ curl -sSL https://get.asdl.website | DOMAIN=ntfy.example.com bash
 `... | bash -s -- --version` to check the stamped installer version without
 doing anything). `server/install.sh` in this repo is the source — the
 release pipeline stamps a version into it (see [Releases](#releases)).
+`cloudflare/get-installer/` is the Worker that serves it at
+`get.asdl.website`, deployed on its own `get.asdl.website/*` route
+(`cd cloudflare/get-installer && wrangler deploy` to redeploy — it rarely
+needs to change since it just proxies GitHub's latest release asset).
 
 Manual setup instead: install ntfy (https://ntfy.sh/docs/install/), copy
 `server/ntfy/server.yml` to `/etc/ntfy/server.yml` with your own `base-url`,
