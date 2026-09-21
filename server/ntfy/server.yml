@@ -1,0 +1,22 @@
+# ntfy server config — self-hosted SMS relay
+# Docs: https://docs.ntfy.sh/config/
+
+base-url: "https://ntfy.asdl.website"
+listen-http: "127.0.0.1:2586"
+behind-proxy: true
+
+cache-file: "/var/cache/ntfy/cache.db"
+cache-duration: "12h"
+
+auth-file: "/var/lib/ntfy/auth.db"
+auth-default-access: "deny-all"
+enable-signup: false
+enable-login: false
+
+# Required for the iOS app to receive push notifications on a self-hosted
+# server: iOS can't hold a persistent connection in the background, so the
+# official app relies on ntfy.sh's Firebase/APNs relay to send a content-free
+# "wake up and fetch" poke. Only the topic name + message ID are sent to
+# ntfy.sh for that poke — the SMS content itself is never sent there, it's
+# fetched directly from this server over HTTPS when the app wakes up.
+upstream-base-url: "https://ntfy.sh"
