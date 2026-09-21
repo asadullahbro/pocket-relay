@@ -35,17 +35,16 @@ Fedora, or a generic fallback for anything else) — installs ntfy, configures
 nginx + certbot if present, and creates a scoped user/token:
 
 ```
-curl -sSL https://get.asdl.website | DOMAIN=ntfy.example.com bash
+curl -sSL https://get.asdl.website/sms-forwarder | DOMAIN=ntfy.example.com bash
 ```
 
 (or `bash -s -- ntfy.example.com` to pass the domain positionally; run
 `... | bash -s -- --version` to check the stamped installer version without
-doing anything). `server/install.sh` in this repo is the source — the
-release pipeline stamps a version into it (see [Releases](#releases)).
-`cloudflare/get-installer/` is the Worker that serves it at
-`get.asdl.website`, deployed on its own `get.asdl.website/*` route
-(`cd cloudflare/get-installer && wrangler deploy` to redeploy — it rarely
-needs to change since it just proxies GitHub's latest release asset).
+doing anything; pin a specific release with
+`get.asdl.website/v1.0.0/sms-forwarder`). `server/install.sh` in this repo
+is the source — the release pipeline stamps a version into it (see
+[Releases](#releases)). `get.asdl.website` itself is infra shared across
+several projects and isn't part of this repo.
 
 Manual setup instead: install ntfy (https://ntfy.sh/docs/install/), copy
 `server/ntfy/server.yml` to `/etc/ntfy/server.yml` with your own `base-url`,
@@ -90,9 +89,9 @@ builds the APK and publishes a GitHub Release with two stamped assets:
 - `install.sh` — `server/install.sh` with `@@VERSION@@` replaced by the tag
 - `sms-forwarder-vX.Y.Z.apk`
 
-`https://get.asdl.website` serves the `install.sh` from the latest release,
-so the one-line install command always matches a tagged, reproducible
-version rather than whatever's on `master`.
+`https://get.asdl.website/sms-forwarder` serves the `install.sh` from the
+latest release, so the one-line install command always matches a tagged,
+reproducible version rather than whatever's on `master`.
 
 ## License
 
