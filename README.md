@@ -17,6 +17,11 @@ Android phone --SMS--> SmsReceiver --HTTP POST--> self-hosted ntfy server --push
   (`SmsForwardWorker`) that POSTs it as JSON to your ntfy server, with retry
   on failure. `MainActivity` is a bare settings screen for the server
   URL/topic/token and permission grants.
+- **Call alerts** — when a call starts ringing, `CallReceiver` sends an urgent ntfy alert like
+  "Name (number) is calling" (the contact name comes from your contacts, otherwise just the
+  number). It needs the phone-state, call-log and contacts permissions (the "Grant permissions"
+  button asks for all of them) and can be switched off in the app. It only tells you who is
+  calling; it does not forward the call itself.
 - **`server/ntfy/server.yml`** — config for a self-hosted ntfy instance.
   Auth defaults to deny-all; only a scoped user/token can publish or
   subscribe to the topic. `upstream-base-url` is set to `ntfy.sh` so the

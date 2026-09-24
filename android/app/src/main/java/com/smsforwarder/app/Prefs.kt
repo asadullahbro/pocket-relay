@@ -7,6 +7,9 @@ object Prefs {
     private const val KEY_SERVER_URL = "server_url"
     private const val KEY_TOPIC = "topic"
     private const val KEY_TOKEN = "token"
+    private const val KEY_CALL_ALERTS = "call_alerts"
+    private const val KEY_LAST_CALL_NUMBER = "last_call_number"
+    private const val KEY_LAST_CALL_AT = "last_call_at"
 
     private fun prefs(ctx: Context) =
         ctx.getSharedPreferences(FILE, Context.MODE_PRIVATE)
@@ -31,6 +34,20 @@ object Prefs {
             .putString(KEY_TOPIC, topic.trim())
             .putString(KEY_TOKEN, token.trim())
             .apply()
+    }
+
+    fun callAlertsEnabled(ctx: Context): Boolean =
+        prefs(ctx).getBoolean(KEY_CALL_ALERTS, true)
+
+    fun setCallAlertsEnabled(ctx: Context, value: Boolean) {
+        prefs(ctx).edit().putBoolean(KEY_CALL_ALERTS, value).apply()
+    }
+
+    fun lastCallNumber(ctx: Context): String = prefs(ctx).getString(KEY_LAST_CALL_NUMBER, "") ?: ""
+    fun lastCallAt(ctx: Context): Long = prefs(ctx).getLong(KEY_LAST_CALL_AT, 0L)
+
+    fun markCall(ctx: Context, number: String, at: Long) {
+        prefs(ctx).edit().putString(KEY_LAST_CALL_NUMBER, number).putLong(KEY_LAST_CALL_AT, at).apply()
     }
 
     fun isConfigured(ctx: Context): Boolean =
