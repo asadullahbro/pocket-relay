@@ -160,6 +160,35 @@
                     android:orientation="vertical"
                     android:paddingBottom="8dp">
 
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/hotspotOnlySwitch"
+                        style="@style/RowSwitch"
+                        android:text="Only while the hotspot is on" />
+
+                    <LinearLayout
+                        android:id="@+id/panelWaiting"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingBottom="4dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="The mobile hotspot is off, so the panel is off too. Turn the hotspot on and it starts by itself."
+                            android:textColor="@color/warn"
+                            android:textSize="14sp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/openHotspot"
+                            style="@style/Widget.Material3.Button.TonalButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Turn on mobile hotspot"
+                            android:textAllCaps="false" />
+                    </LinearLayout>
+
                     <TextView
                         android:id="@+id/panelAddress"
                         android:layout_width="match_parent"

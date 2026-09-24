@@ -47,6 +47,8 @@ object Prefs {
     fun setPanelEnabled(ctx: Context, value: Boolean) { prefs(ctx).edit().putBoolean("panel_enabled", value).apply() }
     fun panelFeature(ctx: Context, key: String, default: Boolean): Boolean = prefs(ctx).getBoolean("pf_$key", default)
     fun setPanelFeature(ctx: Context, key: String, value: Boolean) { prefs(ctx).edit().putBoolean("pf_$key", value).apply() }
+    fun panelHotspotOnly(ctx: Context): Boolean = prefs(ctx).getBoolean("panel_hotspot_only", true)
+    fun setPanelHotspotOnly(ctx: Context, value: Boolean) { prefs(ctx).edit().putBoolean("panel_hotspot_only", value).apply() }
     fun panelPort(ctx: Context): Int = 8080
 
     fun panelPin(ctx: Context): String {

@@ -31,8 +31,10 @@ Android phone --SMS--> SmsReceiver --HTTP POST--> self-hosted ntfy server --push
   and silent mode, a music player (now playing plus previous / play / next for whatever your music app has
   loaded; Play resumes the last app you used), recent messages, sending a text (off by
   default), recent calls, the devices connected to the hotspot (tap one to name it), and phone
-  info. It only accepts connections from the phone itself and private (hotspot / Wi-Fi)
-  addresses, locks out after 5 wrong PINs, and remembers a browser after the PIN is entered once
+  info. By default ("Only while the hotspot is on") the panel runs only while the phone's own hotspot
+  is on and only accepts devices connected to it; when the hotspot is off a notification and the
+  app offer to open the hotspot settings. Turn that switch off to also allow private Wi-Fi
+  addresses. It always accepts the phone itself, locks out after 5 wrong PINs, and remembers a browser after the PIN is entered once
   (stored as a hash; "New PIN" signs everything out). It cannot turn the hotspot on, since it
   only exists while the hotspot is running. Some features need extra access that you grant in
   Android: accessibility (Wi-Fi and mobile-data switches, which only work while the phone is

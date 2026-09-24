@@ -115,6 +115,7 @@ class PanelServer(private val ctx: Context, port: Int) : NanoHTTPD(port) {
 
     private fun allowed(ip: String?): Boolean {
         val addr = try { InetAddress.getByName(ip) } catch (e: Exception) { return false }
+        if (Prefs.panelHotspotOnly(ctx)) return addr.isLoopbackAddress || Hotspot.isFromHotspot(addr)
         return addr.isLoopbackAddress || addr.isSiteLocalAddress || addr.isLinkLocalAddress
     }
 
