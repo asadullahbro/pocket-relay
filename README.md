@@ -1,6 +1,6 @@
-# sms-forwarder
+# Pocket Relay
 
-Forwards incoming SMS on an Android phone to push notifications on iOS, via a
+Forwards incoming SMS and call alerts from an Android phone to push notifications on iOS, via a
 self-hosted [ntfy](https://ntfy.sh) relay. Built because iOS doesn't allow a
 persistent background connection and a custom iOS push implementation needs a
 paid Apple Developer account — this sidesteps that by using ntfy's official
@@ -22,6 +22,23 @@ Android phone --SMS--> SmsReceiver --HTTP POST--> self-hosted ntfy server --push
   number). It needs the phone-state, call-log and contacts permissions (the "Grant permissions"
   button asks for all of them) and can be switched off in the app. It only tells you who is
   calling; it does not forward the call itself.
+- **Control panel (optional, off by default)** — a small PIN-protected web page served by the
+  app, for controlling the Android from the iPhone once the phone's hotspot is on. Open
+  `http://192.168.43.1:8080` (the address is shown in the app) in Safari and enter the PIN.
+  The master switch and a switch per feature live in the app's "Control panel" card, and a
+  feature that is off is hidden from the page and refused by the server. Features: ring the
+  phone, flashlight, Bluetooth / Wi-Fi / mobile-data switches (plus restart mobile data), volume
+  and silent mode, a music player (now playing plus previous / play / next for whatever your music app has
+  loaded; Play resumes the last app you used), recent messages, sending a text (off by
+  default), recent calls, the devices connected to the hotspot (tap one to name it), and phone
+  info. It only accepts connections from the phone itself and private (hotspot / Wi-Fi)
+  addresses, locks out after 5 wrong PINs, and remembers a browser after the PIN is entered once
+  (stored as a hash; "New PIN" signs everything out). It cannot turn the hotspot on, since it
+  only exists while the hotspot is running. Some features need extra access that you grant in
+  Android: accessibility (Wi-Fi and mobile-data switches, which only work while the phone is
+  unlocked), Do Not Disturb access (silent mode) and notification access (music). Bluetooth
+  switches directly and works with the screen off; Wi-Fi cannot be switched by apps while the
+  hotspot is on.
 - **`server/ntfy/server.yml`** — config for a self-hosted ntfy instance.
   Auth defaults to deny-all; only a scoped user/token can publish or
   subscribe to the topic. `upstream-base-url` is set to `ntfy.sh` so the
@@ -40,13 +57,13 @@ Fedora, or a generic fallback for anything else) — installs ntfy, configures
 nginx + certbot if present, and creates a scoped user/token:
 
 ```
-curl -sSL https://get.asdl.website/sms-forwarder | DOMAIN=ntfy.example.com bash
+curl -sSL https://get.asdl.website/pocket-relay | DOMAIN=ntfy.example.com bash
 ```
 
 (or `bash -s -- ntfy.example.com` to pass the domain positionally; run
 `... | bash -s -- --version` to check the stamped installer version without
 doing anything; pin a specific release with
-`get.asdl.website/v1.0.0/sms-forwarder`). `server/install.sh` in this repo
+`get.asdl.website/v1.0.0/pocket-relay`). `server/install.sh` in this repo
 is the source — the release pipeline stamps a version into it (see
 [Releases](#releases)). `get.asdl.website` itself is infra shared across
 several projects and isn't part of this repo.
@@ -84,6 +101,8 @@ where supported).
   ever sees a topic name and message ID, never the message body.
 - The ntfy server's default auth policy is deny-all; nothing is readable or
   publishable without the scoped token/account.
+- The control panel uses plain HTTP on your own hotspot/Wi-Fi network, protected by a PIN; only
+  enable it if you trust the devices on that network.
 - Treat the access token and account password as secrets — don't commit
   them. `android/local.properties` and build outputs are gitignored.
 
@@ -92,9 +111,9 @@ where supported).
 Tagging a version (`vX.Y.Z`) triggers `.github/workflows/release.yml`, which
 builds the APK and publishes a GitHub Release with two stamped assets:
 - `install.sh` — `server/install.sh` with `@@VERSION@@` replaced by the tag
-- `sms-forwarder-vX.Y.Z.apk`
+- `pocket-relay-vX.Y.Z.apk`
 
-`https://get.asdl.website/sms-forwarder` serves the `install.sh` from the
+`https://get.asdl.website/pocket-relay` serves the `install.sh` from the
 latest release, so the one-line install command always matches a tagged,
 reproducible version rather than whatever's on `master`.
 

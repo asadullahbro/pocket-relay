@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg">#0E0E0E</color>
+    <color name="surface">#171717</color>
+    <color name="line">#2B2B2B</color>
+    <color name="text">#EDEDED</color>
+    <color name="muted">#9A9A96</color>
+    <color name="accent">#EDEDED</color>
+    <color name="ok">#5CBF7A</color>
+    <color name="warn">#E5A64A</color>
+</resources>

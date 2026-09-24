@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# sms-forwarder ntfy relay installer
-# https://github.com/asadullahbro/sms-forwarder
+# Pocket Relay ntfy server installer
+# https://github.com/asadullahbro/pocket-relay
 #
 # Usage:
 #   curl -sSL https://get.asdl.website | DOMAIN=ntfy.example.com bash
@@ -13,7 +13,7 @@ INSTALLER_VERSION="@@VERSION@@"
 set -euo pipefail
 
 if [[ "${1:-}" == "--version" || "${1:-}" == "-v" ]]; then
-  echo "sms-forwarder installer $INSTALLER_VERSION"
+  echo "pocket-relay installer $INSTALLER_VERSION"
   exit 0
 fi
 
@@ -27,7 +27,7 @@ log()  { echo "==> $*"; }
 warn() { echo "!! $*" >&2; }
 die()  { echo "Error: $*" >&2; exit 1; }
 
-echo "sms-forwarder installer $INSTALLER_VERSION"
+echo "pocket-relay installer $INSTALLER_VERSION"
 
 if [[ -z "$DOMAIN" ]]; then
   if [[ -e /dev/tty ]]; then

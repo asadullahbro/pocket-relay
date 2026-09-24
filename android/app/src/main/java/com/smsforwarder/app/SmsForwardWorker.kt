@@ -33,6 +33,7 @@ class SmsForwardWorker(appContext: Context, params: WorkerParameters) :
 
         try {
             publish(serverUrl, topic, token, sender, body, priority)
+            Prefs.markSent(applicationContext, sender, body)
             Result.success()
         } catch (e: Exception) {
             Log.w(TAG, "Publish failed, will retry", e)

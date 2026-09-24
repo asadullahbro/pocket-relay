@@ -39,5 +39,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: sms-forwarder-debug-apk
+          name: pocket-relay-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk

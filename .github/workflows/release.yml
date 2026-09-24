@@ -53,12 +53,12 @@ jobs:
           VERSION="${GITHUB_REF_NAME#v}"
           sed "s/@@VERSION@@/${VERSION}/" server/install.sh > dist/install.sh
           chmod +x dist/install.sh
-          mv dist/app-debug.apk "dist/sms-forwarder-${GITHUB_REF_NAME}.apk"
+          mv dist/app-debug.apk "dist/pocket-relay-${GITHUB_REF_NAME}.apk"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             dist/install.sh
-            dist/sms-forwarder-*.apk
+            dist/pocket-relay-*.apk
           generate_release_notes: true

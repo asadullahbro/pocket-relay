@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_description">Lets the optional local control panel tap Quick Settings tiles (for example to restart mobile data) when you ask it to. It does nothing on its own.</string>
+</resources>
