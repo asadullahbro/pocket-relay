@@ -52,6 +52,12 @@ class MainActivity : AppCompatActivity() {
             refresh()
         }
 
+        b.hotspotOnlySwitch.setOnCheckedChangeListener { _, on ->
+            Prefs.setPanelHotspotOnly(this, on)
+            if (Prefs.panelEnabled(this)) PanelService.start(this)
+            refresh()
+        }
+        b.openHotspot.setOnClickListener { startActivity(HotspotSettings.intent(this)) }
         b.newPin.setOnClickListener { Prefs.newPanelPin(this); refresh() }
         b.panelAddress.setOnClickListener { copy(b.panelAddress.text.toString().lineSequence().firstOrNull().orEmpty()) }
         b.save.setOnClickListener { save(); refresh() }
@@ -62,6 +68,16 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         if (Prefs.panelEnabled(this)) PanelService.start(this)
         refresh()
+        b.root.postDelayed(autoRefresh, 3000)
+    }
+
+    private val autoRefresh = object : Runnable {
+        override fun run() { refresh(); b.root.postDelayed(this, 3000) }
+    }
+
+    override fun onPause() {
+        b.root.removeCallbacks(autoRefresh)
+        super.onPause()
     }
 
     // ---- state ---------------------------------------------------------------------
@@ -134,6 +150,11 @@ class MainActivity : AppCompatActivity() {
         b.panelDetails.visibility = if (panelOn) android.view.View.VISIBLE else android.view.View.GONE
         b.panelOffHint.visibility = if (panelOn) android.view.View.GONE else android.view.View.VISIBLE
         buildFeatureSwitches()
+        val hotspotOnly = Prefs.panelHotspotOnly(this)
+        val waiting = panelOn && hotspotOnly && !Hotspot.isOn()
+        b.hotspotOnlySwitch.isChecked = hotspotOnly
+        b.panelWaiting.visibility = if (waiting) android.view.View.VISIBLE else android.view.View.GONE
+        b.panelAddress.visibility = if (waiting) android.view.View.GONE else android.view.View.VISIBLE
         if (panelOn) {
             val addresses = panelAddresses()
             b.panelAddress.text = if (addresses.isEmpty()) "Turn on the hotspot or join Wi-Fi to get an address"
@@ -176,12 +197,15 @@ class MainActivity : AppCompatActivity() {
         b.setupList.addView(row.root)
     }
 
-    private fun panelAddresses(): List<String> =
-        NetworkInterface.getNetworkInterfaces().toList()
+    private fun panelAddresses(): List<String> {
+        val port = Prefs.panelPort(this)
+        if (Prefs.panelHotspotOnly(this)) return Hotspot.addresses().map { "http://$it:$port" }
+        return NetworkInterface.getNetworkInterfaces().toList()
             .filter { it.isUp && !it.isLoopback && !it.name.startsWith("rmnet") }
             .flatMap { it.inetAddresses.toList() }
             .filter { it is Inet4Address && it.isSiteLocalAddress }
-            .map { "http://${it.hostAddress}:${Prefs.panelPort(this)}" }
+            .map { "http://${it.hostAddress}:$port" }
+    }
 
     // ---- actions -------------------------------------------------------------------
 

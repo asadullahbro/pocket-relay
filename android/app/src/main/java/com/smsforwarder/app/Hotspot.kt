@@ -21,6 +21,25 @@ object Hotspot {
             nif.isUp && AP_NAME.matches(nif.name) && nif.interfaceAddresses.any { it.address is Inet4Address }
         }
 
+    /** True while this phone's own hotspot is running. */
+    fun isOn(): Boolean = try { apInterface() != null } catch (e: Exception) { false }
+
+    /** http addresses (without scheme) of the hotspot interface. */
+    fun addresses(): List<String> = try {
+        apInterface()?.interfaceAddresses?.map { it.address }?.filterIsInstance<Inet4Address>()?.mapNotNull { it.hostAddress } ?: emptyList()
+    } catch (e: Exception) { emptyList() }
+
+    /** True if [addr] belongs to the hotspot's own subnet. */
+    fun isFromHotspot(addr: InetAddress): Boolean {
+        if (addr !is Inet4Address) return false
+        val ia = apInterface()?.interfaceAddresses?.firstOrNull { it.address is Inet4Address } ?: return false
+        val prefix = ia.networkPrefixLength.toInt()
+        val a = java.nio.ByteBuffer.wrap(addr.address).int
+        val b = java.nio.ByteBuffer.wrap(ia.address.address).int
+        val mask = if (prefix == 0) 0 else -1 shl (32 - prefix)
+        return (a and mask) == (b and mask)
+    }
+
     /** Blocking (~3 s): pokes every address on the hotspot subnet, then keeps only hosts that really answer. */
     fun clients(): List<Client> {
         val nif = apInterface() ?: return emptyList()
