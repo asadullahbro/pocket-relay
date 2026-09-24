@@ -16,12 +16,14 @@ class SmsForwardWorker(appContext: Context, params: WorkerParameters) :
     companion object {
         const val KEY_SENDER = "sender"
         const val KEY_BODY = "body"
+        const val KEY_PRIORITY = "priority"
         private const val TAG = "SmsForwardWorker"
     }
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         val sender = inputData.getString(KEY_SENDER) ?: return@withContext Result.failure()
         val body = inputData.getString(KEY_BODY) ?: ""
+        val priority = inputData.getInt(KEY_PRIORITY, 4)
 
         val serverUrl = Prefs.serverUrl(applicationContext)
         val topic = Prefs.topic(applicationContext)
@@ -30,7 +32,7 @@ class SmsForwardWorker(appContext: Context, params: WorkerParameters) :
         if (serverUrl.isBlank() || topic.isBlank()) return@withContext Result.failure()
 
         try {
-            publish(serverUrl, topic, token, sender, body)
+            publish(serverUrl, topic, token, sender, body, priority)
             Result.success()
         } catch (e: Exception) {
             Log.w(TAG, "Publish failed, will retry", e)
@@ -38,12 +40,12 @@ class SmsForwardWorker(appContext: Context, params: WorkerParameters) :
         }
     }
 
-    private fun publish(serverUrl: String, topic: String, token: String, sender: String, body: String) {
+    private fun publish(serverUrl: String, topic: String, token: String, sender: String, body: String, priority: Int) {
         val payload = JSONObject().apply {
             put("topic", topic)
             put("title", sender)
             put("message", body)
-            put("priority", 4)
+            put("priority", priority)
         }
 
         val url = URL(serverUrl)

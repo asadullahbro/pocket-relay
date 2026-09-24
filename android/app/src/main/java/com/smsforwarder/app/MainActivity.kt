@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
         root.addView(spacer())
 
         val grantButton = Button(this).apply {
-            text = "Grant SMS permissions"
+            text = "Grant permissions (SMS, calls, contacts)"
             setOnClickListener { requestSmsPermissions() }
         }
         root.addView(grantButton)
@@ -79,6 +79,14 @@ class MainActivity : AppCompatActivity() {
         root.addView(label("Access token (from ntfy token add)"))
         tokenInput = EditText(this)
         root.addView(tokenInput)
+        root.addView(spacer())
+
+        val callSwitch = android.widget.Switch(this).apply {
+            text = "Alert me when a call comes in"
+            isChecked = Prefs.callAlertsEnabled(this@MainActivity)
+            setOnCheckedChangeListener { _, checked -> Prefs.setCallAlertsEnabled(this@MainActivity, checked) }
+        }
+        root.addView(callSwitch)
         root.addView(spacer())
 
         val saveButton = Button(this).apply {
@@ -119,7 +127,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun requestSmsPermissions() {
         requestPermissionsLauncher.launch(
-            arrayOf(Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_SMS)
+            arrayOf(
+                Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_SMS,
+                Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CALL_LOG,
+                Manifest.permission.READ_CONTACTS,
+            )
         )
     }
 
@@ -138,10 +150,15 @@ class MainActivity : AppCompatActivity() {
         ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED &&
             ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED
 
+    private fun hasCallPermissions(): Boolean =
+        listOf(Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_CONTACTS)
+            .all { ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED }
+
     private fun updateStatus() {
         val perms = if (hasSmsPermissions()) "granted" else "NOT granted"
+        val callPerms = if (hasCallPermissions()) "granted" else "NOT granted"
         val configured = if (Prefs.isConfigured(this)) "configured" else "NOT configured"
-        statusLabel.text = "SMS permissions: $perms\nServer: $configured"
+        statusLabel.text = "SMS permissions: $perms\nCall alert permissions: $callPerms\nServer: $configured"
     }
 
     private fun sendTest() {
