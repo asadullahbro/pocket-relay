@@ -1,4 +1,4 @@
-package com.smsforwarder.app
+package com.pocketrelay.app
 
 import java.net.DatagramPacket
 import java.net.DatagramSocket

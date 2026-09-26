@@ -1,4 +1,4 @@
-package com.smsforwarder.app
+package com.pocketrelay.app
 
 import android.Manifest
 import android.content.ClipData
@@ -21,9 +21,9 @@ import androidx.core.content.ContextCompat
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.smsforwarder.app.databinding.ActivityMainBinding
-import com.smsforwarder.app.databinding.ItemFeatureBinding
-import com.smsforwarder.app.databinding.ItemSetupBinding
+import com.pocketrelay.app.databinding.ActivityMainBinding
+import com.pocketrelay.app.databinding.ItemFeatureBinding
+import com.pocketrelay.app.databinding.ItemSetupBinding
 import java.net.Inet4Address
 import java.net.NetworkInterface
 

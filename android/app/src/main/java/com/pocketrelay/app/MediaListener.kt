@@ -1,4 +1,4 @@
-package com.smsforwarder.app
+package com.pocketrelay.app
 
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification

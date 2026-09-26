@@ -1,9 +1,9 @@
-package com.smsforwarder.app
+package com.pocketrelay.app
 
 import android.content.Context
 
 object Prefs {
-    private const val FILE = "sms_forwarder_prefs"
+    private const val FILE = "pocket_relay_prefs"
     private const val KEY_SERVER_URL = "server_url"
     private const val KEY_TOPIC = "topic"
     private const val KEY_TOKEN = "token"

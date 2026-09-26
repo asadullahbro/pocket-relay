@@ -1,4 +1,4 @@
-package com.smsforwarder.app
+package com.pocketrelay.app
 
 import android.accessibilityservice.AccessibilityService
 import android.content.Intent

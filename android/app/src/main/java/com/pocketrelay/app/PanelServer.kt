@@ -1,4 +1,4 @@
-package com.smsforwarder.app
+package com.pocketrelay.app
 
 import android.content.Context
 import fi.iki.elonen.NanoHTTPD

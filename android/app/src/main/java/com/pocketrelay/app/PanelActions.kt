@@ -1,4 +1,4 @@
-package com.smsforwarder.app
+package com.pocketrelay.app
 
 import android.app.ActivityManager
 import android.bluetooth.BluetoothAdapter

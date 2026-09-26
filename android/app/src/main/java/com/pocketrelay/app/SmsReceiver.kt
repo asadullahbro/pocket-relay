@@ -1,4 +1,4 @@
-package com.smsforwarder.app
+package com.pocketrelay.app
 
 import android.content.BroadcastReceiver
 import android.content.Context

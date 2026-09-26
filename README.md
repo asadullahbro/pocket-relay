@@ -82,6 +82,10 @@ sudo ntfy token add forwarder
 
 ### 2. Android app
 
+> **Upgrading from v1.2.x or earlier:** the app's package ID changed to `com.pocketrelay.app`, so it installs as a
+> separate app. Uninstall the old one first (otherwise both would forward every SMS) and set it up again; settings
+> and permissions don't carry over.
+
 Open `android/` in Android Studio (or build with `./gradlew assembleDebug`),
 install it on your phone, grant SMS permissions, disable battery
 optimization for the app, and fill in the settings screen with your server
