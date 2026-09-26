@@ -1,13 +1,13 @@
 # Pocket Relay
 
-Forwards incoming SMS and call alerts from an Android phone to push notifications on iOS, via a
-self-hosted [ntfy](https://ntfy.sh) relay. Built because iOS doesn't allow a
-persistent background connection and a custom iOS push implementation needs a
-paid Apple Developer account — this sidesteps that by using ntfy's official
-iOS app, which already has push notifications working.
+Forwards incoming SMS and call alerts from an Android phone to push notifications on any other
+phone (iOS, Android, or a browser), via a self-hosted [ntfy](https://ntfy.sh) relay. Built because
+iOS doesn't allow a persistent background connection and a custom iOS push implementation needs a
+paid Apple Developer account — this sidesteps that by using ntfy's official apps, which already
+have push notifications working.
 
 ```
-Android phone --SMS--> SmsReceiver --HTTP POST--> self-hosted ntfy server --push--> iOS app
+Android phone --SMS--> SmsReceiver --HTTP POST--> self-hosted ntfy server --push--> ntfy app (any phone)
 ```
 
 ## How it works
@@ -23,8 +23,8 @@ Android phone --SMS--> SmsReceiver --HTTP POST--> self-hosted ntfy server --push
   button asks for all of them) and can be switched off in the app. It only tells you who is
   calling; it does not forward the call itself.
 - **Control panel (optional, off by default)** — a small PIN-protected web page served by the
-  app, for controlling the Android from the iPhone once the phone's hotspot is on. Open
-  `http://192.168.43.1:8080` (the address is shown in the app) in Safari and enter the PIN.
+  app, for controlling the Android from another phone once the phone's hotspot is on. Open
+  `http://192.168.43.1:8080` (the address is shown in the app) in a browser and enter the PIN.
   The master switch and a switch per feature live in the app's "Control panel" card, and a
   feature that is off is hidden from the page and refused by the server. Features: ring the
   phone, flashlight, Bluetooth / Wi-Fi / mobile-data switches (plus restart mobile data), volume
@@ -44,11 +44,11 @@ Android phone --SMS--> SmsReceiver --HTTP POST--> self-hosted ntfy server --push
 - **`server/ntfy/server.yml`** — config for a self-hosted ntfy instance.
   Auth defaults to deny-all; only a scoped user/token can publish or
   subscribe to the topic. `upstream-base-url` is set to `ntfy.sh` so the
-  official iOS app can receive push notifications (only the topic name and
+  official iOS app can receive push notifications (Android and web clients don't need this) (only the topic name and
   message ID are relayed there to trigger the push — message content is
   fetched directly from your own server).
-- **iOS** — no custom app. Install the official [ntfy app](https://ntfy.sh)
-  from the App Store and subscribe to your server/topic.
+- **Receiving phone** — no custom app. Install the official [ntfy app](https://ntfy.sh) (iOS, Android or web)
+  and subscribe to your server/topic.
 
 ## Setup
 
@@ -94,9 +94,9 @@ URL, topic, and token.
 A GitHub Actions workflow (`.github/workflows/build-apk.yml`) also builds
 the debug APK on every push and uploads it as a build artifact.
 
-### 3. iOS app
+### 3. Receiving phone
 
-Install the official **ntfy** app from the App Store, add a subscription
+Install the official **ntfy** app (App Store, Google Play/F-Droid, or use the web app), add a subscription
 for your server URL and topic, and log in with the ntfy account's
 username/password (or an `Authorization: Bearer <token>` custom header,
 where supported).
